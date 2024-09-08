@@ -26,7 +26,22 @@ def encrypt_callback():
 
 
 #decrypt logic
+def decrypt(text, key):
+    decrypted = ''
+    text = text.lower()
+    for i in text:
+        if i == ' ':
+            decrypted += ' '
+            continue
+        index = letters_reversed[i]
+        decrypted += letters[(index - key) % 26]
+    return decrypted
 
+def decrypt_callback():
+    text = dpg.get_value("d_input_text")
+    key = int(dpg.get_value("d_key"))
+    decrypted = decrypt(text, key)
+    dpg.set_value("d_output_text", decrypted)
 
 #gui
 dpg.create_context()
@@ -46,14 +61,14 @@ with dpg.window(label="Encryptor", width=600, height=215, pos=(0, 0), collapsed=
 
 with dpg.window(label="Decryptor", width=600, height=200, pos=(0, 18), collapsed=True):
     dpg.add_text("Before")
-    dpg.add_input_text(default_value="Enter text here")
+    dpg.add_input_text(default_value="Enter text here", tag = "d_input_text")
 
-    dpg.add_input_text(default_value="Enter key here")
-    dpg.add_button(label="Decrypt")
+    dpg.add_input_text(default_value="Enter key here", tag = "d_key")
+    dpg.add_button(label="Decrypt", callback=decrypt_callback)
 
     dpg.add_text('')
     dpg.add_text('Decrypted Text')
-    dpg.add_input_text(default_value="*****")
+    dpg.add_input_text(default_value="*****", tag = 'd_output_text')
 
 with dpg.window(label="Instructions", width=600, height=200, pos=(0, 36), collapsed=False):
     dpg.add_text("Welcome to Ceaser Cipher Encryptor!")
